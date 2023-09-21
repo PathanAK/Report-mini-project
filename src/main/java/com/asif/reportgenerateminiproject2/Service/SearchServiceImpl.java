@@ -4,6 +4,7 @@ import com.asif.reportgenerateminiproject2.Entity.CustomerDetails;
 import com.asif.reportgenerateminiproject2.Entity.SearchRequest;
 import com.asif.reportgenerateminiproject2.Repository.CustomerRepository;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +27,18 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public List<CustomerDetails> getDetailsBaseOnRequest(SearchRequest request) {
 
-        return null;
+        CustomerDetails entity = new CustomerDetails();
+
+        if (request.getPlanName() != null && !request.getPlanStatus().equals("")) {
+            entity.setPlanName(request.getPlanName());
+        }
+        if (request.getPlanStatus() != null && !request.getPlanStatus().equals("")) {
+            entity.setPlanStatus(request.getPlanStatus());
+        }
+
+        Example<CustomerDetails> example = Example.of(entity);
+        List<CustomerDetails> records = customerRepo.findAll(example);
+        return records;
     }
 
     @Override
