@@ -47,20 +47,18 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public List<CustomerDetails> getDetailsBaseOnRequest(SearchRequest request) {
-
         CustomerDetails entity = new CustomerDetails();
-
-        if (request.getPlanName() != null && !request.getPlanStatus().equals("")) {
+        if (request.getPlanName() != null && !request.getPlanName().isEmpty()) {
             entity.setPlanName(request.getPlanName());
         }
-        if (request.getPlanStatus() != null && !request.getPlanStatus().equals("")) {
+        if (request.getPlanStatus() != null && !request.getPlanStatus().isEmpty()) {
             entity.setPlanStatus(request.getPlanStatus());
         }
-
         Example<CustomerDetails> example = Example.of(entity);
         List<CustomerDetails> records = customerRepo.findAll(example);
         return records;
     }
+
 
     @Override
     public void exportExcel(HttpServletResponse response) throws IOException {
@@ -109,77 +107,61 @@ public class SearchServiceImpl implements SearchService {
 
 
     @Override
-    public void exportPdf(HttpServletResponse response) throws FileNotFoundException {
-
-        List<CustomerDetails> details = customerRepo.findAll();
+    public void exportPdf(HttpServletResponse response) throws IOException {
+        List<CustomerDetails> entities = customerRepo.findAll();
 
         Document document = new Document(PageSize.A4);
-        PdfWriter.getInstance(document, new FileOutputStream("CustomerDetails.pdf"));
+
+        PdfWriter.getInstance(document, response.getOutputStream());
+
         document.open();
 
         Font font = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
-        font.setSize(14);
-        font.setColor(Color.BLACK);
+        font.setSize(18);
+        font.setColor(Color.BLUE);
 
-        Paragraph p = new Paragraph("List of Customer", font);
+        Paragraph p = new Paragraph("Search Report", font);
         p.setAlignment(Paragraph.ALIGN_CENTER);
 
         document.add(p);
 
-        PdfPTable table = new PdfPTable(8);
+        PdfPTable table = new PdfPTable(5);
         table.setWidthPercentage(100f);
-        table.setWidths(new float[]{1.5f, 3.5f, 3.0f, 3.0f, 1.5f});
+        table.setWidths(new float[] { 1.5f, 3.5f, 3.0f, 1.5f, 3.0f });
         table.setSpacingBefore(10);
 
-        //set table header data
         PdfPCell cell = new PdfPCell();
         cell.setBackgroundColor(Color.BLUE);
         cell.setPadding(5);
 
-        Font f = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
-        f.setColor(Color.white);
+        font = FontFactory.getFont(FontFactory.HELVETICA);
+        font.setColor(Color.WHITE);
 
-        cell.setPhrase(new Phrase("ID", f));
+        cell.setPhrase(new Phrase("Name", font));
         table.addCell(cell);
 
-        cell.setPhrase(new Phrase("Name", f));
+        cell.setPhrase(new Phrase("E-mail", font));
         table.addCell(cell);
 
-        cell.setPhrase(new Phrase("Email ID", f));
+        cell.setPhrase(new Phrase("Phno", font));
         table.addCell(cell);
 
-        cell.setPhrase(new Phrase("PhoneNumber", f));
+        cell.setPhrase(new Phrase("Gender", font));
         table.addCell(cell);
 
-        cell.setPhrase(new Phrase("Gender", f));
+        cell.setPhrase(new Phrase("SSN", font));
         table.addCell(cell);
 
-        cell.setPhrase(new Phrase("SSN", f));
-        table.addCell(cell);
-
-        cell.setPhrase(new Phrase("Plan Name", f));
-        table.addCell(cell);
-
-        cell.setPhrase(new Phrase("Plan Status", f));
-        table.addCell(cell);
-
-        //set table data
-
-        for(CustomerDetails record : details) {
-            table.addCell(String.valueOf(record.getId()));
-            table.addCell(record.getName());
-            table.addCell(record.getEmail());
-            table.addCell(String.valueOf(record.getPhoneNumber()));
-            table.addCell(record.getGender());
-            table.addCell(String.valueOf(record.getSsn()));
-            table.addCell(record.getPlanName());
-            table.addCell(record.getPlanStatus());
-
+        for (CustomerDetails entity : entities) {
+            table.addCell(entity.getName());
+            table.addCell(entity.getEmail());
+            table.addCell(String.valueOf(entity.getPhoneNumber()));
+            table.addCell(String.valueOf(entity.getGender()));
+            table.addCell(String.valueOf(entity.getSsn()));
         }
 
         document.add(table);
+
         document.close();
-
-
     }
 }

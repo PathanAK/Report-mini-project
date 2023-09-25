@@ -16,7 +16,7 @@ public interface SearchService {
     public List<String> getPlanStatus();
     public List<CustomerDetails> getDetailsBaseOnRequest(SearchRequest request);
     public void exportExcel(HttpServletResponse response) throws IOException;
-    public void exportPdf(HttpServletResponse response) throws FileNotFoundException;
+    public void exportPdf(HttpServletResponse response) throws IOException;
 
 }
 
