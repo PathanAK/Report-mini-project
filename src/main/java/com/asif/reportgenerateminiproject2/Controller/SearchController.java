@@ -21,10 +21,12 @@ public class SearchController {
         this.searchService = searchService;
     }
 
+
     @GetMapping("/all")
     public ResponseEntity<List<CustomerDetails>> getAllDetails() {
         return new ResponseEntity<>(searchService.getAllDetails(), HttpStatus.OK);
     }
+
 
     @GetMapping("/excel")
     public void generateExcelReport(HttpServletResponse response) throws Exception {

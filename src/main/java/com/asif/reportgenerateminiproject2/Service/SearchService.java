@@ -5,6 +5,7 @@ import com.asif.reportgenerateminiproject2.Entity.SearchRequest;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface SearchService {
     public List<String> getPlanStatus();
     public List<CustomerDetails> getDetailsBaseOnRequest(SearchRequest request);
     public void exportExcel(HttpServletResponse response) throws IOException;
-    public void exportPdf(HttpServletResponse response);
+    public void exportPdf(HttpServletResponse response) throws FileNotFoundException;
 
 }
 
